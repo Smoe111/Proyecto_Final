@@ -8,6 +8,7 @@
 package co.edu.uniquindio.poo.torneodeportivo;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -26,24 +27,21 @@ public class Torneo {
     private final int valorInscripcion;
     private final TipoTorneo tipoTorneo;
     private final Collection<Participante> participantes;
-    private final CaracterTorneo caracter;
+    private final CaracterTorneo caracterTorneo;
+    private final Collection<Equipo> listaEquiposConEstadisticas;
 
     public Torneo(String nombre, LocalDate fechaInicio,
             LocalDate fechaInicioInscripciones,
             LocalDate fechaCierreInscripciones, byte numeroParticipantes,
-            byte limiteEdad, int valorInscripcion,TipoTorneo tipoTorneo,CaracterTorneo caracter) {
+            byte limiteEdad, int valorInscripcion,TipoTorneo tipoTorneo, CaracterTorneo caracter) {
         
         ASSERTION.assertion( nombre != null , "El nombre es requerido");
         
-        
-        
         ASSERTION.assertion( numeroParticipantes >= 0, "El número de participantes no puede ser negativo");
-        ASSERTION.assertion( limiteEdad >= 0,"El limite de edad no puede ser negativo");
+        ASSERTION.assertion( limiteEdad >= 0,"El límite de edad no puede ser negativo");
         ASSERTION.assertion( valorInscripcion >= 0,"El valor de la inscripción no puede ser negativo");
         
-        
         this.nombre = nombre;
-        
         setFechaInicioInscripciones(fechaInicioInscripciones);
         setFechaCierreInscripciones(fechaCierreInscripciones); 
         setFechaInicio(fechaInicio);
@@ -52,7 +50,10 @@ public class Torneo {
         this.valorInscripcion = valorInscripcion;
         this.tipoTorneo = tipoTorneo;
         this.participantes = new LinkedList<>();
-        this.caracter = Objects.requireNonNull(caracter,"El carácter del torneo es requerido");
+        this.caracterTorneo = Objects.requireNonNull(caracter,"El carácter del torneo es requerido");
+
+        // Inicialización de listaEquiposConEstadisticas (por ejemplo, utilizando ArrayList)
+        this.listaEquiposConEstadisticas = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -88,7 +89,7 @@ public class Torneo {
     }
 
     public CaracterTorneo getCaracter() {
-        return caracter;
+        return caracterTorneo;
     }
 
     public void setFechaInicio(LocalDate fechaInicio) {
@@ -129,7 +130,7 @@ public class Torneo {
      * @param participante Participante a ser registrado
      */
     private void validarCaracter(Participante participante) {
-        ASSERTION.assertion( caracter.esValido(participante),"Las inscripciones no están abiertas");
+        ASSERTION.assertion( caracterTorneo.esValido(participante),"Las inscripciones no están abiertas");
     }
 
     /**
