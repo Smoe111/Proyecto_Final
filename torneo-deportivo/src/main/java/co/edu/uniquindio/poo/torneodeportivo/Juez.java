@@ -4,7 +4,7 @@ public class Juez extends Persona implements Participante{
     //atributo
     private String licencia;
 
-    public Juez(String nombre, String apellido, String email, String celular){
+    public Juez(String nombre, String apellido, String email, String celular, String licencia){
         super(nombre, apellido, email, celular);
         this.licencia = licencia;  
     }

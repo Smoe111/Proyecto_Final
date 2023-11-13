@@ -1,3 +1,4 @@
+
 /**
  * Registro que agrupa los datos de un Equipo
  * @author Área de programación UQ
@@ -9,19 +10,21 @@ package co.edu.uniquindio.poo.torneodeportivo;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import static co.edu.uniquindio.poo.util.AssertionUtil.ASSERTION;
 
-public record Equipo(String nombre,Persona representante,Collection<Jugador> jugadores) implements Participante {
+public record Equipo(String nombre,Persona representante,Collection<Jugador> jugadores, int victorias, int empates, int derrotas, List<Enfrentamiento> enfrentamientos ) implements Participante {
     public Equipo{
         ASSERTION.assertion( nombre != null && !nombre.isBlank() , "El nombre es requerido");
         ASSERTION.assertion( representante != null , "El representante es requerido");
     }
 
+    //es un constructor adicional que se utiliza para crear un nuevo objeto Equipo con valores iniciales cuando no se especifican los jugadores ni las estadísticas de victorias, empates y derrotas.
     public Equipo(String nombre,Persona representante){
-        this(nombre,representante,new LinkedList<>());
+        this(nombre,representante,new LinkedList<>(), 0, 0, 0, new LinkedList<>());
     }
 
     /**
@@ -31,6 +34,23 @@ public record Equipo(String nombre,Persona representante,Collection<Jugador> jug
     public void registrarJugador(Jugador jugador) {
         validarJugadorExiste(jugador);
         jugadores.add(jugador);
+    }
+
+    
+    public Collection<Jugador> jugadores() {
+        return jugadores;
+    }
+
+    public int getVictorias() {
+        return victorias;
+    }
+
+    public int getEmpates() {
+        return empates;
+    }
+
+    public int getDerrotas() {
+        return derrotas;
     }
 
     /**
@@ -57,4 +77,30 @@ public record Equipo(String nombre,Persona representante,Collection<Jugador> jug
     public String getNombreCompleto() {
         return nombre;
     }
+
+    public List<Enfrentamiento> getEnfrentamientos() {
+        return enfrentamientos;
+    }
+
+    public Equipo registrarResultado(Enfrentamiento resultado) {
+
+        int newVictorias = victorias;
+        int newEmpates = empates;
+        int newDerrotas = derrotas;
+        String resultadoEnfrentamiento = resultado.calcularResultado();
+
+        if (resultadoEnfrentamiento.equals("victoria")) {
+            newVictorias++;
+        } else if (resultadoEnfrentamiento.equals("empate")) {
+            newEmpates++;
+        } else if (resultadoEnfrentamiento.equals("derrota")) {
+            newDerrotas++;
+        }
+
+        List<Enfrentamiento> nuevosEnfrentamientos = new LinkedList<>(enfrentamientos);
+        nuevosEnfrentamientos.add(resultado);   
+        return new Equipo(nombre, representante, jugadores, newVictorias, newEmpates, newDerrotas, nuevosEnfrentamientos);
+    }
+
+
 }

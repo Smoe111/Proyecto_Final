@@ -11,10 +11,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import static co.edu.uniquindio.poo.util.AssertionUtil.ASSERTION;
 
 public class Torneo {
@@ -29,17 +33,19 @@ public class Torneo {
     private final Collection<Participante> participantes;
     private final CaracterTorneo caracterTorneo;
     private final Collection<Equipo> listaEquiposConEstadisticas;
+    private final GeneroTorneo genero;
 
     public Torneo(String nombre, LocalDate fechaInicio,
             LocalDate fechaInicioInscripciones,
             LocalDate fechaCierreInscripciones, byte numeroParticipantes,
-            byte limiteEdad, int valorInscripcion,TipoTorneo tipoTorneo, CaracterTorneo caracter) {
+            byte limiteEdad, int valorInscripcion,TipoTorneo tipoTorneo, CaracterTorneo caracter,  GeneroTorneo genero) {
         
+                
         ASSERTION.assertion( nombre != null , "El nombre es requerido");
-        
         ASSERTION.assertion( numeroParticipantes >= 0, "El número de participantes no puede ser negativo");
         ASSERTION.assertion( limiteEdad >= 0,"El límite de edad no puede ser negativo");
         ASSERTION.assertion( valorInscripcion >= 0,"El valor de la inscripción no puede ser negativo");
+        
         
         this.nombre = nombre;
         setFechaInicioInscripciones(fechaInicioInscripciones);
@@ -51,6 +57,7 @@ public class Torneo {
         this.tipoTorneo = tipoTorneo;
         this.participantes = new LinkedList<>();
         this.caracterTorneo = Objects.requireNonNull(caracter,"El carácter del torneo es requerido");
+        this.genero = Objects.requireNonNull(genero, "El género del torneo es requerido");
 
         // Inicialización de listaEquiposConEstadisticas (por ejemplo, utilizando ArrayList)
         this.listaEquiposConEstadisticas = new ArrayList<>();
@@ -92,6 +99,11 @@ public class Torneo {
         return caracterTorneo;
     }
 
+    public GeneroTorneo getGenero() {
+        return genero;
+    }
+
+
     public void setFechaInicio(LocalDate fechaInicio) {
         ASSERTION.assertion( fechaInicio != null , "La fecha de inicio es requerida");
         ASSERTION.assertion( ( fechaInicioInscripciones == null || fechaInicio.isAfter(fechaInicioInscripciones) ) &&
@@ -119,7 +131,7 @@ public class Torneo {
     public void registrarParticipante(Participante participante) {
         validarParticipanteExiste(participante); 
 
-        validarInscripciopnesAbiertas(); 
+        validarInscripcionesAbiertas(); 
         validarCaracter(participante);
 
         participantes.add(participante);
@@ -136,7 +148,7 @@ public class Torneo {
     /**
      * Valida que las inscripciones del torneo esten abiertas, en caso de no estarlo genera un assertion error.
      */
-    private void validarInscripciopnesAbiertas() {
+    private void validarInscripcionesAbiertas() {
         boolean inscripcionAbierta = fechaInicioInscripciones.isBefore(LocalDate.now()) && fechaCierreInscripciones.isAfter(LocalDate.now());
         ASSERTION.assertion( inscripcionAbierta,"Las inscripciones no están abiertas");
     }
@@ -228,4 +240,21 @@ public class Torneo {
         var edadAlInicioTorneo = jugador.calcularEdad(fechaInicio);
         ASSERTION.assertion( limiteEdad == 0 || limiteEdad >= edadAlInicioTorneo , "No se pueden registrar jugadores que excedan el limite de edad del torneo"); 
     }
+
+    public List<Enfrentamiento> obtenerEnfrentamientosDeEquipo(String nombreEquipo) {
+        return participantes.stream()
+                .filter(participante -> participante instanceof Equipo && ((Equipo) participante).getNombreCompleto().equals(nombreEquipo))
+                .map(participante -> ((Equipo) participante).getEnfrentamientos())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+    
+    private Collection<Equipo> generarListaEquiposConEstadisticas (){
+        return listaEquiposConEstadisticas.stream()
+                .sorted(Comparator.comparing(Equipo::getVictorias).reversed()
+                        .thenComparing(Equipo::getEmpates).reversed()
+                        .thenComparing(Equipo::getDerrotas).reversed())
+                .collect(Collectors.toList());
+    }
+    
 }
