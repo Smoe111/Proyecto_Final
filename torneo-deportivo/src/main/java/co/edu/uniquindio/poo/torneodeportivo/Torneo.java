@@ -11,9 +11,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -32,8 +33,9 @@ public class Torneo {
     private final TipoTorneo tipoTorneo;
     private final Collection<Participante> participantes;
     private final CaracterTorneo caracterTorneo;
-    private final Collection<Equipo> listaEquiposConEstadisticas;
+    private final Collection<Equipo> listaEquipos;
     private final GeneroTorneo genero;
+    private final Collection<Juez> jueces;
 
     public Torneo(String nombre, LocalDate fechaInicio,
             LocalDate fechaInicioInscripciones,
@@ -58,9 +60,9 @@ public class Torneo {
         this.participantes = new LinkedList<>();
         this.caracterTorneo = Objects.requireNonNull(caracter,"El carácter del torneo es requerido");
         this.genero = Objects.requireNonNull(genero, "El género del torneo es requerido");
-
+        this.jueces = new LinkedList<>();
         // Inicialización de listaEquiposConEstadisticas (por ejemplo, utilizando ArrayList)
-        this.listaEquiposConEstadisticas = new ArrayList<>();
+        this.listaEquipos= new ArrayList<>();
     }
 
     public String getNombre() {
@@ -248,13 +250,45 @@ public class Torneo {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
-    
-    private Collection<Equipo> generarListaEquiposConEstadisticas (){
-        return listaEquiposConEstadisticas.stream()
-                .sorted(Comparator.comparing(Equipo::getVictorias).reversed()
-                        .thenComparing(Equipo::getEmpates).reversed()
-                        .thenComparing(Equipo::getDerrotas).reversed())
+
+    public List<Enfrentamiento> obtenerEnfrentamientosDeJuez(String numeroLicencia) {
+        return jueces.stream()
+                .filter(juez -> juez.getLicencia().equals(numeroLicencia))
+                .map(Juez::getEnfrentamientos)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
+    
+    public Map<String, String> listadoEstadisticasEquipoPorNombre(String nombreEquipo) {
+        Map<String, String> listaResultados = new HashMap<>();
+    
+        // Filtrar la lista de equipos para encontrar el equipo con el nombre dado
+        Optional<Equipo> equipoEncontrado = listaEquipos.stream()
+                .filter(equipo -> equipo.getNombreCompleto().equals(nombreEquipo))
+                .findFirst();
+    
+        if (equipoEncontrado.isPresent()) {
+            Equipo equipo = equipoEncontrado.get();
+    
+            // Obtener estadísticas del equipo (métodos hipotéticos, ajusta según tu implementación real)
+            int victorias = equipo.getVictorias();
+            int derrotas = equipo.getDerrotas();
+            int empates = equipo.getEmpates();
+           
+    
+            // Agregar estadísticas al mapa
+            listaResultados.put("Nombre", equipo.getNombreCompleto());
+            listaResultados.put("Victorias", String.valueOf(victorias));
+            listaResultados.put("Derrotas", String.valueOf(derrotas));
+            listaResultados.put("Empates", String.valueOf(empates));
+            
+        } else {
+            System.out.println("No se encontró un equipo con el nombre: " + nombreEquipo);
+        }
+    
+        return listaResultados;
+    }
+    
+
     
 }

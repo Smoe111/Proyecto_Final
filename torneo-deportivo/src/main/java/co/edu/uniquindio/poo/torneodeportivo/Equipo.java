@@ -11,6 +11,7 @@ package co.edu.uniquindio.poo.torneodeportivo;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -82,25 +83,26 @@ public record Equipo(String nombre,Persona representante,Collection<Jugador> jug
         return enfrentamientos;
     }
 
-    public Equipo registrarResultado(Enfrentamiento resultado) {
+    public Equipo registrarResultadoEquipo(Enfrentamiento resultado) {
 
         int newVictorias = victorias;
         int newEmpates = empates;
         int newDerrotas = derrotas;
-        String resultadoEnfrentamiento = resultado.calcularResultado();
+        Map<String,String> resultadoEnfrentamiento = resultado.calcularResultado();
 
-        if (resultadoEnfrentamiento.equals("victoria")) {
+        
+        if (resultadoEnfrentamiento.get("equipo").equals("Victoria")) {
             newVictorias++;
-        } else if (resultadoEnfrentamiento.equals("empate")) {
+        } else if (resultadoEnfrentamiento.get("equipo").equals("Empate")) {
             newEmpates++;
-        } else if (resultadoEnfrentamiento.equals("derrota")) {
+        } else if (resultadoEnfrentamiento.get("equipo").equals("Derrota")) {
             newDerrotas++;
         }
 
-        List<Enfrentamiento> nuevosEnfrentamientos = new LinkedList<>(enfrentamientos);
-        nuevosEnfrentamientos.add(resultado);   
-        return new Equipo(nombre, representante, jugadores, newVictorias, newEmpates, newDerrotas, nuevosEnfrentamientos);
-    }
-
-
+        List<Enfrentamiento> nuevosEnfrentamientosEquipo = new LinkedList<>(enfrentamientos);
+        nuevosEnfrentamientosEquipo.add(resultado);
+   
+    return new Equipo(nombre, representante, jugadores, newVictorias, newEmpates, newDerrotas, nuevosEnfrentamientosEquipo);
+}
+    
 }

@@ -2,6 +2,8 @@ package co.edu.uniquindio.poo.torneodeportivo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static co.edu.uniquindio.poo.util.AssertionUtil.ASSERTION;
 
@@ -18,7 +20,7 @@ public class Enfrentamiento {
     private int puntosEquipoVisitante;
 
 
-public Enfrentamiento(String nombreLugar, String ubicacionLugar, LocalDateTime fechaHoraEnfrentamiento, Collection<Juez> jueces,
+    public Enfrentamiento(String nombreLugar, String ubicacionLugar, LocalDateTime fechaHoraEnfrentamiento, Collection<Juez> jueces,
             Equipo equipoLocal, Equipo equipoVisitante, int puntosEquipoLocal, int puntosEquipoVisitante) {
         this.nombreLugar = nombreLugar;
         this.ubicacionLugar = ubicacionLugar;
@@ -34,6 +36,24 @@ public Enfrentamiento(String nombreLugar, String ubicacionLugar, LocalDateTime f
         ASSERTION.assertion( fechaHoraEnfrentamiento != null , "La fecha es requerida");
         ASSERTION.assertion( equipoVisitante != null );
         ASSERTION.assertion( jueces != null );
+    }
+
+    public Enfrentamiento (String nombreLugar, String ubicacionLugar, LocalDateTime fechaHoraEnfrentamiento, Collection<Juez> jueces,
+            Equipo equipoLocal, Equipo equipoVisitante){
+
+        ASSERTION.assertion( nombreLugar != null && !nombreLugar.isBlank() , "El nombre del lugar es requerido");
+        ASSERTION.assertion( ubicacionLugar!= null && !ubicacionLugar.isBlank() , "El nombre es requerido");
+        ASSERTION.assertion( fechaHoraEnfrentamiento != null , "La fecha es requerida");
+        ASSERTION.assertion( equipoVisitante != null );
+        ASSERTION.assertion( jueces != null );
+
+        this.nombreLugar = nombreLugar;
+        this.ubicacionLugar = ubicacionLugar;
+        this.fechaHoraEnfrentamiento = fechaHoraEnfrentamiento;
+        this.jueces = jueces;
+        this.equipoLocal = equipoLocal;
+        this.equipoVisitante = equipoVisitante;
+
     }
 
     public String getNombreLugar() {
@@ -101,32 +121,41 @@ public Enfrentamiento(String nombreLugar, String ubicacionLugar, LocalDateTime f
     }
 
 
-    public String estadoEnfrentamiento() {
-        LocalDateTime fechaHoraActualesEnfrentamiento = LocalDateTime.now();
-        String estado;
+    public String estadoEnfrentamiento(LocalDateTime fechaHoraActual) {
+
+        
+        String estado= "";
     
-        if (fechaHoraActualesEnfrentamiento.isBefore(fechaHoraEnfrentamiento)) {
+        if (fechaHoraActual.isBefore(fechaHoraEnfrentamiento)) {
             estado = "PENDIENTE";
-        } else if (fechaHoraActualesEnfrentamiento.isEqual(fechaHoraEnfrentamiento)) {
+        } else if (fechaHoraActual.isEqual(fechaHoraEnfrentamiento)) {
             estado = "EN JUEGO";
-        } else if (calcularResultado() != null) {
+        } else if  (calcularResultado() != null){
             estado = "FINALIZADO";
-        } else {
+        } else if (fechaHoraActual.isAfter(fechaHoraEnfrentamiento)){
             estado = "APLAZADO";
         }
     
         return estado;
     }
     
-    public String calcularResultado() {
+    public Map<String, String> calcularResultado() {
+        Map<String, String> resultados = new HashMap<>();
+
         if (puntosEquipoLocal > puntosEquipoVisitante) {
-            return "victoria";
-        } else if (puntosEquipoLocal == puntosEquipoVisitante) {
-            return "empate";
+            resultados.put("equipoLocal", "Victoria");
+            resultados.put("equipoVisitante", "Derrota");
+        } else if (puntosEquipoLocal < puntosEquipoVisitante) {
+            resultados.put("equipoLocal", "Derrota");
+            resultados.put("equipoVisitante", "Victoria");
         } else {
-            return "derrota";
+            resultados.put("equipoLocal", "Empate");
+            resultados.put("equipoVisitante", "Empate");
         }
+
+        return resultados;
     }
 }
+
 
 
