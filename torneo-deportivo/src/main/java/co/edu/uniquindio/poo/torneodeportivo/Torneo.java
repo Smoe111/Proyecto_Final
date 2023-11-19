@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class Torneo {
     private final Collection<Equipo> listaEquipos;
     private final GeneroTorneo genero;
     private final Collection<Juez> jueces;
+    private List<Enfrentamiento> listaEnfretamientos;
 
     public Torneo(String nombre, LocalDate fechaInicio,
             LocalDate fechaInicioInscripciones,
@@ -61,8 +63,8 @@ public class Torneo {
         this.caracterTorneo = Objects.requireNonNull(caracter,"El carácter del torneo es requerido");
         this.genero = Objects.requireNonNull(genero, "El género del torneo es requerido");
         this.jueces = new LinkedList<>();
-        // Inicialización de listaEquiposConEstadisticas (por ejemplo, utilizando ArrayList)
         this.listaEquipos= new ArrayList<>();
+        this.listaEnfretamientos= new ArrayList<>();
     }
 
     public String getNombre() {
@@ -105,6 +107,9 @@ public class Torneo {
         return genero;
     }
 
+    public Collection<Enfrentamiento> getEnfretamientos() {
+        return listaEnfretamientos;
+    }
 
     public void setFechaInicio(LocalDate fechaInicio) {
         ASSERTION.assertion( fechaInicio != null , "La fecha de inicio es requerida");
@@ -133,8 +138,8 @@ public class Torneo {
     public void registrarParticipante(Participante participante) {
         validarParticipanteExiste(participante); 
 
-        validarInscripcionesAbiertas(); 
-        validarCaracter(participante);
+         validarCaracter(participante);
+         validarInscripcionesAbiertas(); 
 
         participantes.add(participante);
     }
@@ -154,7 +159,6 @@ public class Torneo {
         boolean inscripcionAbierta = fechaInicioInscripciones.isBefore(LocalDate.now()) && fechaCierreInscripciones.isAfter(LocalDate.now());
         ASSERTION.assertion( inscripcionAbierta,"Las inscripciones no están abiertas");
     }
-
     /**
      * Valida que no exista ya un equipo registrado con el mismo nombre, en caso de haberlo genera un assertion error.
      */
@@ -198,6 +202,14 @@ public class Torneo {
         } );
     }
 
+    public List<Equipo> obtenerEquiposConResultados() {
+        // Filtrar los equipos que tienen al menos un enfrentamiento registrado
+        List<Equipo> equiposConResultados = listaEquipos.stream()
+                .filter(equipo -> !equipo.getEnfrentamientos().isEmpty())
+                .toList();
+
+        return equiposConResultados;
+    }
     /**
      * Permite registrar un jugador en el equipo siempre y cuando este dentro de las fechas validas de registro, 
      * no exista ya un jugador registrado con el mismo nombre y apellido y el jugador no exceda el limite de edad del torneo.
@@ -243,52 +255,67 @@ public class Torneo {
         ASSERTION.assertion( limiteEdad == 0 || limiteEdad >= edadAlInicioTorneo , "No se pueden registrar jugadores que excedan el limite de edad del torneo"); 
     }
 
-    public List<Enfrentamiento> obtenerEnfrentamientosDeEquipo(String nombreEquipo) {
-        return participantes.stream()
-                .filter(participante -> participante instanceof Equipo && ((Equipo) participante).getNombreCompleto().equals(nombreEquipo))
-                .map(participante -> ((Equipo) participante).getEnfrentamientos())
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+    public void registrarEnfrentamiento(Enfrentamiento enfrentamiento) {
+        ASSERTION.assertion(enfrentamiento != null, "El enfrentamiento no puede ser nulo");
+        listaEnfretamientos.add(enfrentamiento);
     }
 
-    public List<Enfrentamiento> obtenerEnfrentamientosDeJuez(String numeroLicencia) {
-        return jueces.stream()
-                .filter(juez -> juez.getLicencia().equals(numeroLicencia))
-                .map(Juez::getEnfrentamientos)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+    public List<Enfrentamiento> obtenerEnfrentamientosDeEquipo(Equipo equipo) {
+        return listaEnfretamientos.stream()
+            .filter(enfrentamiento -> enfrentamiento.getListaEquiposConPuntos().entrySet().stream()
+                .anyMatch(entry -> entry.getKey().equals(equipo)))
+            .collect(Collectors.toList());
+    }  
+
+    public List<Enfrentamiento> obtenerEnfrentamientosPorLicenciaJuez(String licenciaJuez) {
+        // Filtrar los enfrentamientos por la licencia del juez
+        return listaEnfretamientos.stream()
+            .filter(enfrentamiento -> enfrentamiento.getJueces().stream()
+                .anyMatch(juez -> juez.getLicencia().equals(licenciaJuez)))
+            .collect(Collectors.toList());
     }
-    
-    public Map<String, String> listadoEstadisticasEquipoPorNombre(String nombreEquipo) {
-        Map<String, String> listaResultados = new HashMap<>();
-    
-        // Filtrar la lista de equipos para encontrar el equipo con el nombre dado
-        Optional<Equipo> equipoEncontrado = listaEquipos.stream()
-                .filter(equipo -> equipo.getNombreCompleto().equals(nombreEquipo))
-                .findFirst();
-    
-        if (equipoEncontrado.isPresent()) {
-            Equipo equipo = equipoEncontrado.get();
-    
-            // Obtener estadísticas del equipo (métodos hipotéticos, ajusta según tu implementación real)
-            int victorias = equipo.getVictorias();
-            int derrotas = equipo.getDerrotas();
-            int empates = equipo.getEmpates();
-           
-    
-            // Agregar estadísticas al mapa
-            listaResultados.put("Nombre", equipo.getNombreCompleto());
-            listaResultados.put("Victorias", String.valueOf(victorias));
-            listaResultados.put("Derrotas", String.valueOf(derrotas));
-            listaResultados.put("Empates", String.valueOf(empates));
-            
-        } else {
-            System.out.println("No se encontró un equipo con el nombre: " + nombreEquipo);
-        }
-    
-        return listaResultados;
+
+    public List<Enfrentamiento> obteneEnfrentamientos(){
+        return listaEnfretamientos;
+
     }
+
+    public Map<String, String> listadoEstadisticasEquipos() {
+    Map<String, String> listaResultados = new HashMap<>();
+
+    // Recorrer todos los equipos en el torneo
+    for (Equipo equipo : listaEquipos) {
+        int victorias = equipo.getVictorias();
+        int derrotas = equipo.getDerrotas();
+        int empates = equipo.getEmpates();
+
+        // Calcular el total de enfrentamientos
+        int totalEnfrentamientos = victorias + derrotas + empates;
+
+        // Agregar estadísticas al mapa
+        listaResultados.put(equipo.getNombreEquipo() + " - Victorias", String.valueOf(victorias));
+        listaResultados.put(equipo.getNombreEquipo() + " - Derrotas", String.valueOf(derrotas));
+        listaResultados.put(equipo.getNombreEquipo() + " - Empates", String.valueOf(empates));
+        listaResultados.put(equipo.getNombreEquipo() + " - Total Enfrentamientos", String.valueOf(totalEnfrentamientos));
+    }
+
+    // Ordenar el mapa por número de victorias, empates y derrotas (en ese orden)
+    listaResultados = listaResultados.entrySet().stream()
+            .sorted(Map.Entry.<String, String>comparingByValue().reversed())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+    return listaResultados;
+}
+
+
+
+
+
+
+
     
+    
+
 
     
 }

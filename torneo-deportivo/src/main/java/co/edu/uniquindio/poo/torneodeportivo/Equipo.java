@@ -1,4 +1,3 @@
-
 /**
  * Registro que agrupa los datos de un Equipo
  * @author Área de programación UQ
@@ -17,13 +16,30 @@ import java.util.function.Predicate;
 
 import static co.edu.uniquindio.poo.util.AssertionUtil.ASSERTION;
 
-public record Equipo(String nombre,Persona representante,Collection<Jugador> jugadores, int victorias, int empates, int derrotas, List<Enfrentamiento> enfrentamientos ) implements Participante {
-    public Equipo{
+public class Equipo implements Participante {
+    private String nombre;
+    private Persona representante;
+    private Collection<Jugador> jugadores;
+    private int victorias;
+    private int empates;
+    private int derrotas;
+    private List<Enfrentamiento> enfrentamientos;
+     
+    public Equipo(String nombre, Persona representante, Collection<Jugador> jugadores, int victorias, int empates,
+            int derrotas, List<Enfrentamiento> enfrentamientos) {
+
         ASSERTION.assertion( nombre != null && !nombre.isBlank() , "El nombre es requerido");
         ASSERTION.assertion( representante != null , "El representante es requerido");
+        this.nombre = nombre;
+        this.representante = representante;
+        this.jugadores = jugadores;
+        this.victorias = victorias;
+        this.empates = empates;
+        this.derrotas = derrotas;
+        this.enfrentamientos = enfrentamientos;
     }
 
-    //es un constructor adicional que se utiliza para crear un nuevo objeto Equipo con valores iniciales cuando no se especifican los jugadores ni las estadísticas de victorias, empates y derrotas.
+    // Es un constructor adicional que se utiliza para crear un nuevo objeto Equipo con valores iniciales cuando no se especifican los jugadores ni las estadísticas de victorias, empates y derrotas.
     public Equipo(String nombre,Persona representante){
         this(nombre,representante,new LinkedList<>(), 0, 0, 0, new LinkedList<>());
     }
@@ -54,11 +70,36 @@ public record Equipo(String nombre,Persona representante,Collection<Jugador> jug
         return derrotas;
     }
 
+    public Persona getRepresentante() {
+        return representante;
+    }
+
+    public List<Enfrentamiento> getEnfrentamientos() {
+        return enfrentamientos;
+    }
+
+    @Override
+    public String getNombreCompleto() {
+        return nombre;
+    }
+
+    public String getNombreEquipo(){
+        return nombre;
+    }
+
+    public void agregarEnfrentamiento(Enfrentamiento enfrentamiento) {
+        enfrentamientos.add(enfrentamiento);
+    }
+
+    
+
+
+
     /**
-     * Permimte buscar un jugador en el equipo basado en su nombre y apellido.
+     * Permite buscar un jugador en el equipo basado en su nombre y apellido.
      * @param jugador Jugador que se desea buscar
      * @return Optional con el jugador que coincida con el nombre y apellido del jugador buscado, 
-     * o Optinal vacío en caso de no encontrar un jugador en el equipo con dicho nombre y apellido.
+     * o Optional vacío en caso de no encontrar un jugador en el equipo con dicho nombre y apellido.
      */
     public Optional<Jugador> buscarJugador(Jugador jugador){
         Predicate<Jugador> nombreIgual = j->j.getNombre().equals(jugador.getNombre());
@@ -71,38 +112,34 @@ public record Equipo(String nombre,Persona representante,Collection<Jugador> jug
      */
     private void validarJugadorExiste(Jugador jugador) {
         boolean existeJugador = buscarJugador(jugador).isPresent();
-        ASSERTION.assertion( !existeJugador,"El jugador ya esta registrado");
+        ASSERTION.assertion( !existeJugador,"El jugador ya está registrado");
     }
 
-    @Override
-    public String getNombreCompleto() {
-        return nombre;
-    }
-
-    public List<Enfrentamiento> getEnfrentamientos() {
-        return enfrentamientos;
-    }
-
-    public Equipo registrarResultadoEquipo(Enfrentamiento resultado) {
-
+    public Equipo registrarResultadoEquipo(Enfrentamiento resultado, Equipo equipo) {
         int newVictorias = victorias;
         int newEmpates = empates;
         int newDerrotas = derrotas;
-        Map<String,String> resultadoEnfrentamiento = resultado.calcularResultado();
+        Map<Equipo, String> resultadoEnfrentamiento = resultado.calcularResultado();
 
-        
-        if (resultadoEnfrentamiento.get("equipo").equals("Victoria")) {
+        if (resultadoEnfrentamiento.get(equipo).equals("Victoria")) {
             newVictorias++;
-        } else if (resultadoEnfrentamiento.get("equipo").equals("Empate")) {
+        } else if (resultadoEnfrentamiento.get(equipo).equals("Empate")) {
             newEmpates++;
-        } else if (resultadoEnfrentamiento.get("equipo").equals("Derrota")) {
+        } else if (resultadoEnfrentamiento.get(equipo).equals("Derrota")) {
             newDerrotas++;
         }
 
         List<Enfrentamiento> nuevosEnfrentamientosEquipo = new LinkedList<>(enfrentamientos);
         nuevosEnfrentamientosEquipo.add(resultado);
-   
-    return new Equipo(nombre, representante, jugadores, newVictorias, newEmpates, newDerrotas, nuevosEnfrentamientosEquipo);
-}
+
+        victorias = newVictorias;
+        empates = newEmpates;
+        derrotas = newDerrotas;
+        enfrentamientos = nuevosEnfrentamientosEquipo;
+
+        // Devolver la instancia actualizada
+        return new Equipo(nombre, representante, jugadores, newVictorias, newEmpates, newDerrotas, nuevosEnfrentamientosEquipo);
+    }
     
+   
 }

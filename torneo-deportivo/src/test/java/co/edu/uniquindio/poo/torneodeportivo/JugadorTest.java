@@ -8,10 +8,12 @@
 package co.edu.uniquindio.poo.torneodeportivo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
@@ -194,6 +196,43 @@ public class JugadorTest {
         
         LOG.info("Fin de prueba registrarJugadoresRepetidosTorneo...");
     }
+
+      @Test
+    public void buscarJugadorExistenteEnEquipo() {
+        LOG.info("Inicio prueba para verificar la búsqueda de un jugador existente en un equipo");
+
+        Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1), LocalDate.of(2024, 1, 5), (byte)24, (byte)0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL, GeneroTorneo.FEMENINO);
+
+        var representante = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300"); 
+        Equipo equipo = new Equipo("Tigres", representante);
+        torneo.registrarParticipante(equipo);
+
+        Jugador jugadorBuscado = new Jugador("Zharick", "Gutierrez", "mGrY@gamil.com", "3145290574", LocalDate.of(2006, 6, 5), GeneroTorneo.FEMENINO);
+        equipo.registrarJugador(jugadorBuscado);
+
+        Optional<Jugador> jugadorEncontrado = torneo.buscarJugador(jugadorBuscado);
+
+        assertTrue(jugadorEncontrado.isPresent());
+        assertEquals(jugadorBuscado, jugadorEncontrado.get());
+
+        LOG.info("Fin prueba para verificar la búsqueda de un jugador existente en un equipo");
+    }
+
+    @Test
+    public void buscarJugadorNoExistente() {
+        LOG.info("Inicio prueba para verificar la búsqueda de un jugador no existente");
+
+       Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1), LocalDate.of(2024, 1, 5), (byte)24, (byte)0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL, GeneroTorneo.FEMENINO);
+
+        Jugador jugadorNoExistente = new Jugador("NombreNoExistente", "ApellidoNoExistente", "correo@noexistente.com", "123456789", LocalDate.of(2000, 1, 1), GeneroTorneo.MASCULINO);
+
+        Optional<Jugador> jugadorEncontrado = torneo.buscarJugador(jugadorNoExistente);
+
+        assertFalse(jugadorEncontrado.isPresent());
+
+        LOG.info("Fin prueba para verificar la búsqueda de un jugador no existente");
+    }
+
 
 
 }

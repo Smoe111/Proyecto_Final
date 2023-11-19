@@ -3,7 +3,7 @@ package co.edu.uniquindio.poo.torneodeportivo;
 public enum CaracterTorneo {
     INDIVIDUAL{
         public boolean esValido(Participante participante){
-            return participante instanceof Jugador;
+            return participante instanceof Jugador || participante instanceof Juez;
         }
     },GRUPAL{
         public boolean esValido(Participante participante){

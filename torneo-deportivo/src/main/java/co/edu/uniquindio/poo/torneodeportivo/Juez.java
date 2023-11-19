@@ -1,6 +1,7 @@
 package co.edu.uniquindio.poo.torneodeportivo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -8,11 +9,11 @@ import java.util.Objects;
 public class Juez extends Persona implements Participante{
     //atributo
     private String licencia;
-    private final List<Enfrentamiento> enfrentamientos;
+    private List<Enfrentamiento> enfrentamientos;
 
     public Juez(String nombre, String apellido, String email, String celular, String licencia){
         super(nombre, apellido, email, celular);
-        this.licencia = licencia;  
+        this.licencia = licencia; 
         this.enfrentamientos = new ArrayList<>();
     }
 
@@ -32,16 +33,18 @@ public class Juez extends Persona implements Participante{
      * Permite obtener la lista de enfrentamientos en los que participará el juez.
      * @return List<Enfrentamiento> con los enfrentamientos del juez.
      */
-    public List<Enfrentamiento> getEnfrentamientos() {
-        return Collections.unmodifiableList(enfrentamientos);
+    public Collection<Enfrentamiento> getEnfrentamientos() {
+        return enfrentamientos;
     }
     /**
      * Permite agregar un enfrentamiento a la lista de enfrentamientos del juez.
      * @param enfrentamiento Enfrentamiento a ser agregado.
      */
     public void agregarEnfrentamiento(Enfrentamiento enfrentamiento) {
-        enfrentamientos.add(Objects.requireNonNull(enfrentamiento, "El enfrentamiento no puede ser nulo"));
+        enfrentamientos.add(enfrentamiento);
     }
+    
+    
 
 
 }

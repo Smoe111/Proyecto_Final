@@ -15,8 +15,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class EquipoTest {
@@ -80,7 +85,6 @@ public class EquipoTest {
     public void inscripcionCerrada() {
         LOG.info("Inicio de prueba inscripcionCerrada...");
         // Almacenar los datos de prueba Torneo{Copa Mundo\|fechaActual+ 1mes\| fechaActual - 15 días\|fechaActual-1 días\|24\|0\|0\|LOCAL|GRUPAL}  Equipo{Uniquindio} Representante{Robinson,Pulgarin,rpulgarin@email.com,6067359300}
-
         
         Torneo torneo = new Torneo("Copa Mundo", LocalDate.now().plusMonths(1), LocalDate.now().minusDays(15), LocalDate.now().minusDays(1), (byte)24, (byte)0, 0,TipoTorneo.LOCAL,CaracterTorneo.GRUPAL, GeneroTorneo.MIXTO);
 
@@ -93,41 +97,32 @@ public class EquipoTest {
         LOG.info("Fin de prueba inscripcionCerrada...");
     }
 
-    /**
-     * Verificar que la clase Torneo valide que no se ingresen equipos cuando las inscripciones aun no han abrierto
-     * 
-     */
     @Test
-    public void inscripcionNoAbierta() {
-        LOG.info("Inicio de prueba inscripcionNoAbierta...");
-        // Almacenar los datos de prueba Torneo{Copa Mundo\|fechaActual+ 1mes\| fechaActual + 1 día\|fechaActual+15 días\|24\|0\|0\|LOCAL|GRUPAL}  Equipo{Uniquindio} Representante{Robinson,Pulgarin,rpulgarin@email.com,6067359300}
+    public void testRegistrarResultadoEquipo() {
+        var representante1 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300");
+        var representante2 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
+
+        Equipo equipo1 = new Equipo("Tigres", representante1);
+        Equipo equipo2 = new Equipo("Panteras", representante2);
+
+        Juez juez = new Juez("Sara", "Acosta", "SvAb@gmail.com", "3145290574", "123456");
+        Enfrentamiento enfrentamiento = new Enfrentamiento("estadio central", "centro armenia",
+                LocalDateTime.of(2024, 5, 28, 18, 0), List.of(juez), equipo1, equipo2, 3, 2);
 
         
-        Torneo torneo = new Torneo("Copa Mundo", LocalDate.now().plusMonths(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(15), (byte)24, (byte)0, 0,TipoTorneo.LOCAL,CaracterTorneo.GRUPAL, GeneroTorneo.MIXTO);
+        // agrega el enfretamiento  y Registra resultado del enfrentamiento en el equipo1
+        equipo1.registrarResultadoEquipo(enfrentamiento, equipo1);
 
-        var representante = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
+        Assertions.assertEquals(1, equipo1.getVictorias());
+        Assertions.assertEquals(0, equipo1.getEmpates());
+        Assertions.assertEquals(0, equipo1.getDerrotas());
 
-        var equipo = new Equipo("Uniquindio", representante);
-
-        assertThrows(Throwable.class, ()-> torneo.registrarParticipante(equipo));
-        
-        LOG.info("Fin de prueba inscripcionNoAbierta...");
+        // Verificar que el enfrentamiento está en la lista de enfrentamientos del equipo1
+        List<Enfrentamiento> enfrentamientosEquipo = equipo1.getEnfrentamientos();
+        Assertions.assertEquals(1, enfrentamientosEquipo.size());
+        Assertions.assertEquals(enfrentamiento, enfrentamientosEquipo.get(0));
     }
 
-    @Test 
+    
 
-    public void registrarResultado(){
-
-        LocalDateTime fechaHoraActual= LocalDateTime.of(2023,11,2,3 ,30);
-        Collection<Juez> jueces= new ArrayList<>();
-        Persona representante1= new Persona("Sara","Acosta","sara@gmail.com","12345");
-        var representante2= new Persona("Emilio","Echeverri","emilio@gmail.com","12345");
-        Equipo equipoLocal= new Equipo("Equipo Local", representante1);
-        var equipoVisitante= new Equipo("Equipo visitante", representante2);
-
-        Enfrentamiento enfrentamiento= new Enfrentamiento("Universidad del Quindío", "Carrera 49 #50-06", LocalDateTime.of(2023,11, 2,4, 30), jueces, equipoLocal, equipoVisitante, 0, 2);
-
-        
-
-    }
 }

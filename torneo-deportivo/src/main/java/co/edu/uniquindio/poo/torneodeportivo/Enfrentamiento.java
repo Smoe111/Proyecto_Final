@@ -1,5 +1,6 @@
 package co.edu.uniquindio.poo.torneodeportivo;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,7 +19,9 @@ public class Enfrentamiento {
     private Equipo equipoVisitante;
     private int puntosEquipoLocal;
     private int puntosEquipoVisitante;
-
+    private EstadoEnfrentamiento estado;
+    private Map<String, Integer> listaEquiposConPuntos = new HashMap<>();
+   
 
     public Enfrentamiento(String nombreLugar, String ubicacionLugar, LocalDateTime fechaHoraEnfrentamiento, Collection<Juez> jueces,
             Equipo equipoLocal, Equipo equipoVisitante, int puntosEquipoLocal, int puntosEquipoVisitante) {
@@ -30,6 +33,7 @@ public class Enfrentamiento {
         this.equipoVisitante = equipoVisitante;
         this.puntosEquipoLocal = puntosEquipoLocal;
         this.puntosEquipoVisitante = puntosEquipoVisitante;
+        this.estado= EstadoEnfrentamiento.PENDIENTE;
 
         ASSERTION.assertion( nombreLugar != null && !nombreLugar.isBlank() , "El nombre del lugar es requerido");
         ASSERTION.assertion( ubicacionLugar!= null && !ubicacionLugar.isBlank() , "El nombre es requerido");
@@ -38,10 +42,11 @@ public class Enfrentamiento {
         ASSERTION.assertion( jueces != null );
     }
 
+
     public Enfrentamiento (String nombreLugar, String ubicacionLugar, LocalDateTime fechaHoraEnfrentamiento, Collection<Juez> jueces,
             Equipo equipoLocal, Equipo equipoVisitante){
 
-        ASSERTION.assertion( nombreLugar != null && !nombreLugar.isBlank() , "El nombre del lugar es requerido");
+                ASSERTION.assertion( nombreLugar != null && !nombreLugar.isBlank() , "El nombre del lugar es requerido");
         ASSERTION.assertion( ubicacionLugar!= null && !ubicacionLugar.isBlank() , "El nombre es requerido");
         ASSERTION.assertion( fechaHoraEnfrentamiento != null , "La fecha es requerida");
         ASSERTION.assertion( equipoVisitante != null );
@@ -54,7 +59,29 @@ public class Enfrentamiento {
         this.equipoLocal = equipoLocal;
         this.equipoVisitante = equipoVisitante;
 
+            }
+
+    
+
+    public Enfrentamiento(String nombreLugar, String ubicacionLugar, Equipo equipoLocal, Equipo equipoVisitante) {
+        this.nombreLugar = nombreLugar;
+        this.ubicacionLugar = ubicacionLugar;
+        this.equipoLocal = equipoLocal;
+        this.equipoVisitante = equipoVisitante;
     }
+
+    
+
+    public Enfrentamiento(String nombreLugar, String ubicacionLugar, Equipo equipoLocal, Equipo equipoVisitante,
+            int puntosEquipoLocal, int puntosEquipoVisitante) {
+        this.nombreLugar = nombreLugar;
+        this.ubicacionLugar = ubicacionLugar;
+        this.equipoLocal = equipoLocal;
+        this.equipoVisitante = equipoVisitante;
+        this.puntosEquipoLocal = puntosEquipoLocal;
+        this.puntosEquipoVisitante = puntosEquipoVisitante;
+    }
+
 
     public String getNombreLugar() {
         return nombreLugar;
@@ -120,40 +147,60 @@ public class Enfrentamiento {
         this.puntosEquipoVisitante = puntosEquipoVisitante;
     }
 
+    public Map<String, Integer> getListaEquiposConPuntos() {
+        return listaEquiposConPuntos;
+    }
+
 
     public String estadoEnfrentamiento(LocalDateTime fechaHoraActual) {
-
-        
-        String estado= "";
+        String estado = "";
+    
+        if (fechaHoraActual == null) {
+            throw new IllegalArgumentException("La fechaHoraActual no puede ser nula");
+        }
     
         if (fechaHoraActual.isBefore(fechaHoraEnfrentamiento)) {
-            estado = "PENDIENTE";
-        } else if (fechaHoraActual.isEqual(fechaHoraEnfrentamiento)) {
-            estado = "EN JUEGO";
-        } else if  (calcularResultado() != null){
-            estado = "FINALIZADO";
-        } else if (fechaHoraActual.isAfter(fechaHoraEnfrentamiento)){
-            estado = "APLAZADO";
+            estado = EstadoEnfrentamiento.PENDIENTE.name();
+        } else if (fechaHoraActual.isBefore(fechaHoraEnfrentamiento.plusMinutes(15))) {
+            estado = EstadoEnfrentamiento.EN_JUEGO.name();
+        } else if (calcularResultado() != null && fechaHoraActual.isAfter(fechaHoraEnfrentamiento.plusMinutes(120))) {
+            estado = EstadoEnfrentamiento.FINALIZADO.name();
         }
     
         return estado;
     }
     
-    public Map<String, String> calcularResultado() {
-        Map<String, String> resultados = new HashMap<>();
+
+    public String definirEstadoEnfretamientonAplazado(){
+        return EstadoEnfrentamiento.APLAZADO.name();
+    }
+
+
+    public Map<Equipo, String> calcularResultado() {
+        Map<Equipo, String> resultados = new HashMap<>();
 
         if (puntosEquipoLocal > puntosEquipoVisitante) {
-            resultados.put("equipoLocal", "Victoria");
-            resultados.put("equipoVisitante", "Derrota");
+            resultados.put(equipoLocal, "Victoria");
+            resultados.put(equipoVisitante, "Derrota");
         } else if (puntosEquipoLocal < puntosEquipoVisitante) {
-            resultados.put("equipoLocal", "Derrota");
-            resultados.put("equipoVisitante", "Victoria");
+            resultados.put(equipoLocal, "Derrota");
+            resultados.put(equipoVisitante, "Victoria");
         } else {
-            resultados.put("equipoLocal", "Empate");
-            resultados.put("equipoVisitante", "Empate");
+            resultados.put(equipoLocal, "Empate");
+            resultados.put(equipoVisitante, "Empate");
         }
 
         return resultados;
+    }
+
+    public Map<String, Integer> listaEquiposConPuntos(){
+
+        listaEquiposConPuntos.put(equipoLocal.getNombreEquipo(), puntosEquipoLocal);
+        listaEquiposConPuntos.put(equipoVisitante.getNombreEquipo(), puntosEquipoVisitante);
+
+        return listaEquiposConPuntos;
+
+        
     }
 }
 
