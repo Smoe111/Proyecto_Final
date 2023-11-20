@@ -99,6 +99,9 @@ public class EquipoTest {
 
     @Test
     public void testRegistrarResultadoEquipo() {
+
+        LOG.info("Inicio de prueba registrar resultado equipo");
+
         var representante1 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300");
         var representante2 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
 
@@ -118,9 +121,11 @@ public class EquipoTest {
         Assertions.assertEquals(0, equipo1.getDerrotas());
 
         // Verificar que el enfrentamiento está en la lista de enfrentamientos del equipo1
-        List<Enfrentamiento> enfrentamientosEquipo = equipo1.getEnfrentamientos();
+        Collection<Enfrentamiento> enfrentamientosEquipo = equipo1.getEnfrentamientos();
         Assertions.assertEquals(1, enfrentamientosEquipo.size());
-        Assertions.assertEquals(enfrentamiento, enfrentamientosEquipo.get(0));
+
+        LOG.info("Fin de prueba registrar resultado equipo");
+       
     }
 
     

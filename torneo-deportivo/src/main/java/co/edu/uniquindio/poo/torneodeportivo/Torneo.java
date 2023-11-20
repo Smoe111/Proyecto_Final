@@ -37,7 +37,7 @@ public class Torneo {
     private final Collection<Equipo> listaEquipos;
     private final GeneroTorneo genero;
     private final Collection<Juez> jueces;
-    private List<Enfrentamiento> listaEnfretamientos;
+    private Collection<Enfrentamiento> listaEnfretamientos;
 
     public Torneo(String nombre, LocalDate fechaInicio,
             LocalDate fechaInicioInscripciones,
@@ -64,9 +64,11 @@ public class Torneo {
         this.genero = Objects.requireNonNull(genero, "El género del torneo es requerido");
         this.jueces = new LinkedList<>();
         this.listaEquipos= new ArrayList<>();
-        this.listaEnfretamientos= new ArrayList<>();
-    }
+        this.listaEnfretamientos = new ArrayList<>();
+        
 
+       
+    }
     public String getNombre() {
         return nombre;
     }
@@ -256,17 +258,17 @@ public class Torneo {
     }
 
     public void registrarEnfrentamiento(Enfrentamiento enfrentamiento) {
-        ASSERTION.assertion(enfrentamiento != null, "El enfrentamiento no puede ser nulo");
         listaEnfretamientos.add(enfrentamiento);
+        
     }
 
-    public List<Enfrentamiento> obtenerEnfrentamientosDeEquipo(Equipo equipo) {
+    public List<Enfrentamiento> obtenerEnfrentamientosDeEquipo(String nombreEquipo) {
         return listaEnfretamientos.stream()
-            .filter(enfrentamiento -> enfrentamiento.getListaEquiposConPuntos().entrySet().stream()
-                .anyMatch(entry -> entry.getKey().equals(equipo)))
+            .filter(enfrentamiento -> enfrentamiento.getJueces().stream()
+                .anyMatch(juez -> juez.getLicencia().equals(nombreEquipo)))
             .collect(Collectors.toList());
-    }  
-
+    } 
+    
     public List<Enfrentamiento> obtenerEnfrentamientosPorLicenciaJuez(String licenciaJuez) {
         // Filtrar los enfrentamientos por la licencia del juez
         return listaEnfretamientos.stream()
@@ -275,10 +277,6 @@ public class Torneo {
             .collect(Collectors.toList());
     }
 
-    public List<Enfrentamiento> obteneEnfrentamientos(){
-        return listaEnfretamientos;
-
-    }
 
     public Map<String, String> listadoEstadisticasEquipos() {
     Map<String, String> listaResultados = new HashMap<>();

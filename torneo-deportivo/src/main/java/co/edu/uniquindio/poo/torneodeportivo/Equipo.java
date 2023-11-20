@@ -7,6 +7,7 @@
  */
 package co.edu.uniquindio.poo.torneodeportivo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,14 +37,23 @@ public class Equipo implements Participante {
         this.victorias = victorias;
         this.empates = empates;
         this.derrotas = derrotas;
-        this.enfrentamientos = enfrentamientos;
+        this.enfrentamientos = new ArrayList<>();
     }
 
     // Es un constructor adicional que se utiliza para crear un nuevo objeto Equipo con valores iniciales cuando no se especifican los jugadores ni las estadísticas de victorias, empates y derrotas.
     public Equipo(String nombre,Persona representante){
         this(nombre,representante,new LinkedList<>(), 0, 0, 0, new LinkedList<>());
+        this.enfrentamientos = new ArrayList<>();
     }
 
+    public Equipo(String nombre2, Persona representante2, List<Enfrentamiento> listaEnfrentamientos) {
+
+        this.nombre= nombre2;
+        this.representante= representante2;
+        this.enfrentamientos= new ArrayList<>();
+    }
+
+    
     /**
      * Permite registrar un jugador en un equipo siempre y cuando no exista ya un jugador registrado en el equipo con el mismo nombre y apellido
      * @param jugador Jugador que se desea registrar.
@@ -73,9 +83,9 @@ public class Equipo implements Participante {
     public Persona getRepresentante() {
         return representante;
     }
-
-    public List<Enfrentamiento> getEnfrentamientos() {
-        return enfrentamientos;
+    
+    public String getNombreEquipo(){
+        return nombre;
     }
 
     @Override
@@ -83,17 +93,16 @@ public class Equipo implements Participante {
         return nombre;
     }
 
-    public String getNombreEquipo(){
-        return nombre;
+    public Collection<Enfrentamiento> getEnfrentamientos() {
+        return enfrentamientos;
     }
-
+    /**
+     * Permite agregar un enfrentamiento a la lista de enfrentamientos del equipo.
+     * @param enfrentamiento Enfrentamiento a ser agregado.
+     */
     public void agregarEnfrentamiento(Enfrentamiento enfrentamiento) {
         enfrentamientos.add(enfrentamiento);
     }
-
-    
-
-
 
     /**
      * Permite buscar un jugador en el equipo basado en su nombre y apellido.

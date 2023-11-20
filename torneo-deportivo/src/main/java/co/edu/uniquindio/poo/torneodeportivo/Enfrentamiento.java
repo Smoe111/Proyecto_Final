@@ -20,7 +20,7 @@ public class Enfrentamiento {
     private int puntosEquipoLocal;
     private int puntosEquipoVisitante;
     private EstadoEnfrentamiento estado;
-    private Map<String, Integer> listaEquiposConPuntos = new HashMap<>();
+    private Collection<Equipo> listaEquipos = new ArrayList();
    
 
     public Enfrentamiento(String nombreLugar, String ubicacionLugar, LocalDateTime fechaHoraEnfrentamiento, Collection<Juez> jueces,
@@ -147,8 +147,8 @@ public class Enfrentamiento {
         this.puntosEquipoVisitante = puntosEquipoVisitante;
     }
 
-    public Map<String, Integer> getListaEquiposConPuntos() {
-        return listaEquiposConPuntos;
+    public Collection<Equipo> getListaEquipos() {
+        return listaEquipos;
     }
 
 
@@ -193,15 +193,7 @@ public class Enfrentamiento {
         return resultados;
     }
 
-    public Map<String, Integer> listaEquiposConPuntos(){
-
-        listaEquiposConPuntos.put(equipoLocal.getNombreEquipo(), puntosEquipoLocal);
-        listaEquiposConPuntos.put(equipoVisitante.getNombreEquipo(), puntosEquipoVisitante);
-
-        return listaEquiposConPuntos;
-
-        
-    }
+    
 }
 
 
