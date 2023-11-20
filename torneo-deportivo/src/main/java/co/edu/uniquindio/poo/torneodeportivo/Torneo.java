@@ -262,10 +262,10 @@ public class Torneo {
         
     }
 
-    public List<Enfrentamiento> obtenerEnfrentamientosDeEquipo(String nombreEquipo) {
+    public Collection<Enfrentamiento> obtenerEnfrentamientosDeEquipo(Equipo nombreEquipo) {
         return listaEnfretamientos.stream()
-            .filter(enfrentamiento -> enfrentamiento.getJueces().stream()
-                .anyMatch(juez -> juez.getLicencia().equals(nombreEquipo)))
+            .filter(enfretamiento -> enfretamiento.getListaEquipos().stream()
+                .anyMatch(equipo -> equipo.getNombreEquipo().equals(nombreEquipo)))
             .collect(Collectors.toList());
     } 
     

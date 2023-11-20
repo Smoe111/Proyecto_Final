@@ -1,6 +1,5 @@
 package co.edu.uniquindio.poo.torneodeportivo;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class Enfrentamiento {
     private int puntosEquipoLocal;
     private int puntosEquipoVisitante;
     private EstadoEnfrentamiento estado;
-    private Collection<Equipo> listaEquipos = new ArrayList();
+    private Collection<Equipo> listaEquipos = new ArrayList<>();
    
 
     public Enfrentamiento(String nombreLugar, String ubicacionLugar, LocalDateTime fechaHoraEnfrentamiento, Collection<Juez> jueces,

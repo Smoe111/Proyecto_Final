@@ -142,117 +142,11 @@ public class TorneoTest {
         LOG.info("Fin de prueba Cierre inscripción anterior al inicio...");
     }
    
-    @Test
-    public void obtenerEnfrentamientosDeEquipo(){
-        LOG.info("Iniciando prueba para verificar la lista de equipos con enfretamientos");
-
-        Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1), LocalDate.of(2024, 1, 5), (byte) 24, (byte) 0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL, GeneroTorneo.FEMENINO);
-
-        // Crear equipos y registrarlos en el torneo
-        var representante1 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300");
-        var representante2 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
-
-        Equipo equipo1 = new Equipo("Tigres", representante1);
-        Equipo equipo2 = new Equipo("Panteras", representante2);
-
-        torneo.registrarParticipante(equipo1);
-        torneo.registrarParticipante(equipo2);
-
-        // Realizar enfrentamientos (aquí deberías tener lógica específica de tu torneo para realizar enfrentamientos)
-        Enfrentamiento enfrentamiento1 = new Enfrentamiento("Estadio Centro", "Centro Armenia", equipo1, equipo2, 5, 3);
-        Enfrentamiento enfrentamiento2 = new Enfrentamiento("Parque del Cafe", "Montenegro Quindio", equipo1, equipo2, 3, 4);
-
-        torneo.registrarEnfrentamiento(enfrentamiento1);
-        torneo.registrarEnfrentamiento(enfrentamiento2);
-
-        
-
-    }
-    
-    @Test
-    public void testListadoEstadisticasEquipos() {
-        LOG.info("Iniciando prueba para verificar la lista de equipos con estadísticas en orden descendente");
-
-    // Crear un torneo para la prueba
-        Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1), LocalDate.of(2024, 1, 5), (byte) 24, (byte) 0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL, GeneroTorneo.FEMENINO);
-
-        // Crear equipos y registrarlos en el torneo
-        var representante1 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300");
-        var representante2 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
-
-        Equipo equipo1 = new Equipo("Tigres", representante1);
-        Equipo equipo2 = new Equipo("Panteras", representante2);
-
-        torneo.registrarParticipante(equipo1);
-        torneo.registrarParticipante(equipo2);
-
-        // Realizar enfrentamientos (aquí deberías tener lógica específica de tu torneo para realizar enfrentamientos)
-        Enfrentamiento enfrentamiento1 = new Enfrentamiento("Estadio Centro", "Centro Armenia", equipo1, equipo2, 5, 3);
-        Enfrentamiento enfrentamiento2 = new Enfrentamiento("Parque del Cafe", "Montenegro Quindio", equipo1, equipo2, 3, 4);
-
-        torneo.registrarEnfrentamiento(enfrentamiento1);
-        torneo.registrarEnfrentamiento(enfrentamiento2);
-
-        // Realizar registros de resultados (esto también depende de la lógica específica de tu torneo)
-        equipo1.registrarResultadoEquipo(enfrentamiento1, equipo1);
-        equipo2.registrarResultadoEquipo(enfrentamiento2, equipo2);
-
-        // Obtener el listado de estadísticas
-        Map<String, String> estadisticas = torneo.listadoEstadisticasEquipos();
-
-        // Realizar aserciones según las expectativas (ajusta según las estadísticas reales esperadas)
-        assertEquals("Victorias: 1", estadisticas.get("Panteras - Victorias"));
-        assertEquals("Derrotas: 1", estadisticas.get("Panteras - Derrotas"));
-        assertEquals("Empates: 0", estadisticas.get("Panteras - Empates"));
-        assertEquals("Victorias: 1", estadisticas.get("Tigres - Victorias"));
-        assertEquals("Derrotas: 1", estadisticas.get("Tigres - Derrotas"));
-        assertEquals("Empates: 0", estadisticas.get("Tigres - Empates"));
-}
-
-
-    @Test
-    public void testListadoEstadisticasEquipos1() {
-        // Crear un objeto Torneo para la prueba
-        Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1), LocalDate.of(2024, 1, 5), (byte) 24, (byte) 0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL, GeneroTorneo.FEMENINO);
-
-        // Crear equipos y registrarlos en el torneo
-        var representante1 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300");
-        var representante2 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
-        Equipo equipo1 = new Equipo("Tigres", representante1);
-        Equipo equipo2 = new Equipo("Panteras", representante2);
-
-
-        torneo.registrarParticipante(equipo1);
-        torneo.registrarParticipante(equipo2);
-
-        
-
-        // Crear un enfrentamiento ficticio y registrarlo en el torneo
-        Enfrentamiento enfrentamiento1 = new Enfrentamiento("Estadio Centro", "Centro Armenia", equipo1, equipo2, 5, 3);
-
-      
-        equipo1.registrarResultadoEquipo(enfrentamiento1, equipo1);
-        
-
-        // Llamar al método que queremos probar
-        Map<String, String> estadisticasEquipos = torneo.listadoEstadisticasEquipos();
-
-        // Verificar que las estadísticas generadas coinciden con las esperadas
-        assertEquals("1", estadisticasEquipos.get("EquipoA - Victorias"));
-        assertEquals("0", estadisticasEquipos.get("EquipoA - Derrotas"));
-        assertEquals("0", estadisticasEquipos.get("EquipoA - Empates"));
-        assertEquals("1", estadisticasEquipos.get("EquipoA - Total Enfrentamientos"));
-
-        assertEquals("0", estadisticasEquipos.get("EquipoB - Victorias"));
-        assertEquals("1", estadisticasEquipos.get("EquipoB - Derrotas"));
-        assertEquals("0", estadisticasEquipos.get("EquipoB - Empates"));
-        assertEquals("1", estadisticasEquipos.get("EquipoB - Total Enfrentamientos"));
-    }
-
 
     @Test
     public void testObtenerEnfrentamientosDeEquipo() {
         
+        List<Enfrentamiento> listaEnfrentamientos= new ArrayList<>();
         Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1),
                 LocalDate.of(2024, 1, 5), (byte) 24, (byte) 0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL,
                 GeneroTorneo.FEMENINO);
@@ -260,9 +154,8 @@ public class TorneoTest {
         var representante1 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
         var representante2 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300");
 
-        // Crear equipos con la lista de enfrentamientos
-        Equipo equipo1 = new Equipo("Tigres", representante1, new LinkedList<>());
-        Equipo equipo2 = new Equipo("Panteras", representante2, new LinkedList<>());
+        Equipo equipo1 = new Equipo("Tigres", representante1, listaEnfrentamientos);
+        Equipo equipo2 = new Equipo("Panteras", representante1, listaEnfrentamientos);
         Juez juez = new Juez("Sara", "Acosta", "SvAb@gmail.com", "3145290574", "123456");
 
         // Crear un enfrentamiento para el juez
@@ -271,13 +164,49 @@ public class TorneoTest {
 
         // Registrar el enfrentamiento en el torneo
         equipo1.agregarEnfrentamiento(enfrentamiento);
+        var listado=torneo.obtenerEnfrentamientosDeEquipo(equipo1);
         
 
-        
-
-        
-        // Verificar que se obtuvieron los enfrentamientos correctamente
-        Assertions.assertEquals(1, equipo1.getEnfrentamientos()); // Verifica que haya un enfrentamiento registrado
+        assertEquals(1, listado.size()); 
+     
 }
+
+    @Test
+    public void testListadoEstadisticasEquipos() {
+        // Crear un torneo y equipos de prueba
+        Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1), LocalDate.of(2024, 1, 5), (byte) 24, (byte) 0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL, GeneroTorneo.FEMENINO);
+
+        Persona representante1 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
+        Persona representante2 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300");
+
+        Equipo equipo1 = new Equipo("Tigres", representante1);
+        Equipo equipo2 = new Equipo("Panteras", representante2);
+
+        torneo.registrarParticipante(equipo1);
+        torneo.registrarParticipante(equipo2);ñ
+
+        // Simular algunos enfrentamientos y resultados
+        Enfrentamiento enfrentamiento1 = new Enfrentamiento("estadio central", "centro armenia",  equipo1, equipo2);
+        enfrentamiento1.registrarResultado(equipo1, Resultado.VICTORIA);
+
+        Enfrentamiento enfrentamiento2 = new Enfrentamiento("estadio central", "centro armenia", equipo1, equipo2);
+        enfrentamiento2.registrarResultado(equipo2, Resultado.DERROTA);
+
+        torneo.registrarEnfrentamiento(enfrentamiento1);
+        torneo.registrarEnfrentamiento(enfrentamiento2);
+
+        // Ejecutar el método que se va a probar
+        Map<String, String> estadisticasEquipos = torneo.listadoEstadisticasEquipos();
+
+        // Verificar que las estadísticas son las esperadas
+        Assertions.assertEquals("1", estadisticasEquipos.get("Tigres - Victorias"));
+        Assertions.assertEquals("1", estadisticasEquipos.get("Panteras - Derrotas"));
+        Assertions.assertEquals("0", estadisticasEquipos.get("Tigres - Derrotas")); // Debería ser 0
+        Assertions.assertEquals("0", estadisticasEquipos.get("Panteras - Victorias")); // Debería ser 0
+        Assertions.assertEquals("0", estadisticasEquipos.get("Tigres - Empates"));
+        Assertions.assertEquals("0", estadisticasEquipos.get("Panteras - Empates"));
+        Assertions.assertEquals("2", estadisticasEquipos.get("Tigres - Total Enfrentamientos"));
+        Assertions.assertEquals("1", estadisticasEquipos.get("Panteras - Total Enfrentamientos"));
+    }
 
 }

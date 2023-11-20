@@ -92,6 +92,10 @@ public class Equipo implements Participante {
     public String getNombreCompleto() {
         return nombre;
     }
+    
+    public void agregarEnfrentamiento(Enfrentamiento enfrentamiento) {
+        enfrentamientos.add(enfrentamiento);
+    }
 
     public Collection<Enfrentamiento> getEnfrentamientos() {
         return enfrentamientos;
@@ -100,9 +104,7 @@ public class Equipo implements Participante {
      * Permite agregar un enfrentamiento a la lista de enfrentamientos del equipo.
      * @param enfrentamiento Enfrentamiento a ser agregado.
      */
-    public void agregarEnfrentamiento(Enfrentamiento enfrentamiento) {
-        enfrentamientos.add(enfrentamiento);
-    }
+    
 
     /**
      * Permite buscar un jugador en el equipo basado en su nombre y apellido.
