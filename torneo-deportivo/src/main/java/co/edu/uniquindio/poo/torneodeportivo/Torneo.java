@@ -67,7 +67,31 @@ public class Torneo {
         this.listaEnfretamientos = new ArrayList<>();
         
 
-       
+    }
+   public Torneo(String nombre, LocalDate fechaInicio, LocalDate fechaInicioInscripciones,
+            LocalDate fechaCierreInscripciones, byte numeroParticipantes, byte limiteEdad, int valorInscripcion,
+            TipoTorneo tipoTorneo,CaracterTorneo caracterTorneo, GeneroTorneo genero,
+            Collection<Enfrentamiento> listaEnfretamientos) {
+
+        ASSERTION.assertion( nombre != null , "El nombre es requerido");
+        ASSERTION.assertion( numeroParticipantes >= 0, "El número de participantes no puede ser negativo");
+        ASSERTION.assertion( limiteEdad >= 0,"El límite de edad no puede ser negativo");
+        ASSERTION.assertion( valorInscripcion >= 0,"El valor de la inscripción no puede ser negativo");
+        
+        this.nombre = nombre;
+        setFechaInicioInscripciones(fechaInicioInscripciones);
+        setFechaCierreInscripciones(fechaCierreInscripciones); 
+        setFechaInicio(fechaInicio);
+        this.numeroParticipantes = numeroParticipantes;
+        this.limiteEdad = limiteEdad;
+        this.valorInscripcion = valorInscripcion;
+        this.tipoTorneo = tipoTorneo;
+        this.participantes = new LinkedList<>();
+        this.caracterTorneo = Objects.requireNonNull(caracterTorneo,"El carácter del torneo es requerido");
+        this.genero = Objects.requireNonNull(genero, "El género del torneo es requerido");
+        this.jueces = new LinkedList<>();
+        this.listaEquipos= new ArrayList<>();
+        this.listaEnfretamientos = new ArrayList<>();
     }
     public String getNombre() {
         return nombre;
@@ -303,6 +327,8 @@ public class Torneo {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
     return listaResultados;
+
+   
 }
 
 

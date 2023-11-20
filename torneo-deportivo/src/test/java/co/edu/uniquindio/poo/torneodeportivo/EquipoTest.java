@@ -10,17 +10,11 @@ package co.edu.uniquindio.poo.torneodeportivo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -113,14 +107,12 @@ public class EquipoTest {
                 LocalDateTime.of(2024, 5, 28, 18, 0), List.of(juez), equipo1, equipo2, 3, 2);
 
         
-        // agrega el enfretamiento  y Registra resultado del enfrentamiento en el equipo1
         equipo1.registrarResultadoEquipo(enfrentamiento, equipo1);
 
         Assertions.assertEquals(1, equipo1.getVictorias());
         Assertions.assertEquals(0, equipo1.getEmpates());
         Assertions.assertEquals(0, equipo1.getDerrotas());
 
-        // Verificar que el enfrentamiento está en la lista de enfrentamientos del equipo1
         Collection<Enfrentamiento> enfrentamientosEquipo = equipo1.getEnfrentamientos();
         Assertions.assertEquals(1, enfrentamientosEquipo.size());
 

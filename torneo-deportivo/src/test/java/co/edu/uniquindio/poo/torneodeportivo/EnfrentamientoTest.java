@@ -1,19 +1,12 @@
 package co.edu.uniquindio.poo.torneodeportivo;
 
-import static co.edu.uniquindio.poo.util.AssertionUtil.ASSERTION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.Test;
-import co.edu.uniquindio.poo.util.AssertionUtil;
 
 
 
@@ -72,7 +65,7 @@ public class EnfrentamientoTest{
 
     public void validarEstadoEnfrentamientoAplazado(){
 
-        LOG.info("Inicio prueba validar enfrentamiento finalizado");
+        LOG.info("Inicio prueba validar enfrentamiento Aplazado");
 
         LocalDateTime fechaHoraActual= LocalDateTime.of(2023,11,2,7,30);
         Collection<Juez> jueces= new ArrayList<>();
@@ -87,7 +80,7 @@ public class EnfrentamientoTest{
 
         assertEquals("APLAZADO", estado);
 
-        LOG.info("Final de prueba validar estado enfrentamiento finalizado");
+        LOG.info("Final de prueba validar estado enfrentamiento aplazado");
 
     }
 
@@ -95,7 +88,7 @@ public class EnfrentamientoTest{
 
     @Test
     public void testEstadoEnfrentamientoEnJuego() {
-        // Fecha y hora actual igual al enfrentamiento
+        LOG.info("Inicio prueba para verificar estado de enfrentamiento en juego ");
         LocalDateTime fechaHoraActual = LocalDateTime.of(2023, 11, 2, 14, 0);
 
         // Crear un enfrentamiento para la prueba con fecha y hora igual al actual
@@ -105,16 +98,15 @@ public class EnfrentamientoTest{
 
         // Ejecutar el método que se va a probar
         var estado = enfrentamiento.estadoEnfrentamiento(fechaHoraActual);
-
-        // Verificar que el estado es "EN JUEGO"
         assertEquals("EN_JUEGO", estado);
+        LOG.info("Fin prueba para verificar estado de enfrentamiento en juego ");
     }
 
     @Test
 
     public void validarCalcularResultadoDerrotaEquipoLocal(){
 
-        
+        LOG.info("Inicio prueba para verificar calcular resultado enfrentamiento derrota equipo local");
         Collection<Juez> jueces= new ArrayList<>();
         Persona representante1= new Persona("Sara","Acosta","sara@gmail.com","12345");
         var representante2= new Persona("Emilio","Echeverri","emilio@gmail.com","12345");
@@ -127,6 +119,7 @@ public class EnfrentamientoTest{
 
         assertEquals("Victoria", resultado.get(equipoVisitante));
         assertEquals("Derrota", resultado.get(equipoLocal));
+        LOG.info("Fin prueba para verificar calcular resultado enfrentamiento derrota equipo local ");
     }
 
 
@@ -134,7 +127,7 @@ public class EnfrentamientoTest{
 
     public void validarCalcularResultadoVictoriaEquipoLocal(){
 
-        LOG.info("Inicio de prueba validar calcular resultado");
+        LOG.info("Inicio de prueba validar calcular resultado victoria equipo local");
         LocalDateTime fechaHoraActual= LocalDateTime.of(2023,11,2,5,30);
         Collection<Juez> jueces= new ArrayList<>();
         Persona representante1= new Persona("Sara","Acosta","sara@gmail.com","12345");
@@ -149,7 +142,7 @@ public class EnfrentamientoTest{
         assertEquals("Derrota", resultado.get(equipoVisitante));
         assertEquals("Victoria", resultado.get(equipoLocal));
 
-        LOG.info("Final de prueba validar calcular resultado");
+        LOG.info("Final de prueba validar calcular resultado victoria equipo local");
     }
  
 }

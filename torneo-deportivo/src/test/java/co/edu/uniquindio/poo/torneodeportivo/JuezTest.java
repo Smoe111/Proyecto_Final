@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
-
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ public class JuezTest {
 
     @Test
     public void verificarAgregarEnfretamientoAjuez (){
+
+        LOG.info("Inicio de prueba agregar juez al enfrentamiento");
 
         var representante1 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300"); 
         var representante2 = new Persona("William", "Pulgarin", "rpulgarin@email.com", "6067359300"); 
@@ -31,12 +32,15 @@ public class JuezTest {
         Collection<Enfrentamiento> enfrentamientos = juez.getEnfrentamientos();
 
         assertTrue(enfrentamientos.contains(enfrentamiento));
+
+        LOG.info("Fin de prueba agregar juez al enfrentamiento");
     }
 
     @Test
     public void testObtenerEnfrentamientosPorLicenciaJuez() {
     
-        // Crear un torneo y registrar el juez
+        LOG.info("Inicio de prueba obtener enfrentamientos segun la licencia del juez");
+
         Torneo torneo = new Torneo("Copa Mundo", LocalDate.of(2024, 2, 1), LocalDate.of(2023, 11, 1), LocalDate.of(2024, 1, 5), (byte)24, (byte)0, 0, TipoTorneo.LOCAL, CaracterTorneo.GRUPAL, GeneroTorneo.FEMENINO);
 
         var representante1 = new Persona("Robinson", "Pulgarin", "rpulgarin@email.com", "6067359300");
@@ -57,6 +61,8 @@ public class JuezTest {
 
         // Verificar que se obtuvieron los enfrentamientos correctamente
         Assertions.assertEquals(1, enfrentamientosJuez.size()); // Verifica que haya un enfrentamiento registrado
+        
+        LOG.info("Fin de prueba obtener enfrentamientos segun la licencia del juez");
     }
 
 }

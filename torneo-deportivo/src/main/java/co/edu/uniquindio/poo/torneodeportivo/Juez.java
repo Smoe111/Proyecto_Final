@@ -2,9 +2,8 @@ package co.edu.uniquindio.poo.torneodeportivo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+
 
 public class Juez extends Persona implements Participante{
     //atributo
